@@ -1,0 +1,93 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import warnings
+warnings.filterwarnings('ignore')
+data= pd.read_csv(r'C:\Users\HP\Documents\Datasets\titanic_train.csv')
+data
+data.info()
+data.describe()
+data.isna().sum()
+data['Age'].mean()
+data['Age'].fillna(int(data['Age'].mean()), inplace= True)
+data.drop(columns= ['Cabin'], axis=1, inplace= True)
+data.dropna(inplace= True)
+data.isna().sum()
+data.info()
+
+data['Sex']= data['Sex'].map({'male': 0, 'female': 1})
+data['Embarked']= data['Embarked'].map({'S': 0, 'C': 1, 'Q': 2})
+data
+
+sns.boxplot(data)
+plt.figure(figsize= (15,15))
+sns.boxplot(data['Fare'])
+plt.yticks(np.arange(0,600,10))
+plt.grid()
+plt.show()
+data[data['Fare'] > 80].index
+data.drop(index= [27,  31,  34,  62,  88, 118, 195, 215, 224, 230, 245, 257, 258, 268,
+       269, 291, 297, 299, 305, 306, 307, 310, 311, 318, 319, 325, 332, 334,
+       337, 341, 373, 375, 377, 380, 390, 393, 412, 435, 438, 445, 453, 484,
+       486, 498, 504, 505, 520, 527, 537, 544, 550, 557, 581, 609, 659, 660,
+       679, 689, 698, 700, 708, 716, 730, 737, 742, 759, 763, 779, 802, 820,
+       835, 849, 856, 879], axis=0, inplace= True)
+data[data['Fare'] > 60].index
+data.drop(index= [1,  52,  54,  72,  92,  97, 102, 120, 124, 139, 151, 155, 159, 180,
+       201, 218, 256, 262, 275, 290, 324, 336, 366, 369, 385, 496, 540, 558,
+       585, 587, 591, 615, 627, 641, 645, 655, 665, 681, 741, 745, 754, 765,
+       789, 792, 846, 863], axis= 0, inplace= True)
+data.drop_duplicates(keep= 'first', inplace= True)
+sns.boxplot(data['Age'])
+
+data[data['Age'] > 45].index
+data.drop(index= [6,  11,  15,  33,  94,  96, 110, 116, 132, 150, 152, 170, 174, 177,
+       203, 222, 232, 249, 252, 259, 280, 317, 326, 331, 397, 406, 434, 449,
+       456, 458, 460, 462, 463, 467, 482, 483, 487, 492, 493, 513, 515, 526,
+       545, 555, 556, 570, 571, 582, 586, 592, 597, 599, 625, 626, 630, 631,
+       647, 662, 672, 684, 694, 695, 712, 714, 723, 736, 771, 772, 774, 796,
+       851, 857, 862, 871, 873], axis=0, inplace= True)
+data[data['Age'] < 10].index
+data.drop(index= [7,  10,  16,  24,  50,  58,  63,  78, 119, 147, 164, 165, 171, 172,
+       182, 183, 184, 193, 205, 233, 237, 261, 278, 340, 348, 374, 381, 407,
+       448, 469, 479, 489, 530, 535, 541, 549, 618, 634, 642, 644, 691, 720,
+       750, 751, 755, 777, 787, 788, 803, 813, 824, 827, 831, 850, 852, 869], axis= 0, inplace= True)
+data.info()
+data
+
+plt.figure(figsize= (8,6))
+sns.histplot(data['Age'], kde= True)
+plt.title('Age Distribution of Passengers')
+plt.xlabel('Age')
+plt.ylabel('Frequency')
+plt.show()
+
+plt.figure(figsize= (5,5))
+sns.barplot(x='Sex', y='Survived', data= data, width= 0.5)
+plt.title('Survival Rate wrt to Gender')
+plt.xlabel('Gender')
+plt.xticks(ticks= [0,1], labels= ['Male','Female'])
+plt.show()
+
+plt.figure(figsize= (5,5))
+sns.barplot(x= 'Pclass', y= 'Survived', data= data, width= 0.5)
+plt.title('Survival Rate wrt to P-Class')
+plt.xlabel('P-Class')
+plt.show()
+
+plt.figure(figsize= (12,8))
+width= 0.5
+x= data['Sex'].unique()
+y= list(data['Survived'].value_counts())
+survived= [len(data)-y[0], y[1]]
+nonsurvived= [y[0], len(data)-y[1]]
+values= np.arange(len(x))
+plt.bar(values, y, width, label='Survived')
+
+data.groupby('Sex')['Survived'].value_counts()
+sns.countplot(x= "Sex", data= data, hue= 'Survived')
+data.drop(columns= ['Name','Ticket'], axis= 1, inplace= True)
+data.corr()
+plt.figure(figsize= (8,8))
+sns.heatmap(data.corr(), annot= True, cmap= 'viridis')
